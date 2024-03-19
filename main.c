@@ -124,6 +124,51 @@ void dispalyG(struct graph *g)
     }
 }
 
+int parent[100];
+  int e = 0;
+int find(int i){
+    while(parent[i] != i){
+        i = parent[i];
+    }
+    return i;
+}
+
+
+void unioun(int i, int j){
+   
+    int a = find(i);
+    int b = find(j);
+    parent[b] = a;
+ e++;
+    printf("\nkrushkal-edge: %d %d \n", a, b);
+    }
+ 
+ void kruskals(struct graph *g, int v) {
+    int a = 0, b = 0;
+    int min;
+    
+    for (int i = 0; i < v; i++) {
+        parent[i] = i;
+    }
+
+    while (e < v - 1) {
+        min = 999;
+        for (int i = 0; i < v; i++) {
+            struct listNode *ptr = g->A[i];
+            while (ptr != NULL) {
+                if (ptr->w < min && find(ptr->ver) != find(i)) {
+                    min = ptr->w;
+                    a = i;
+                    b = ptr->ver;
+                }
+                ptr = ptr->next;
+            }
+        }
+        unioun(a, b);
+        
+    }
+}
+
 int main()
 {
 
@@ -149,6 +194,7 @@ int main()
 
     printf("\n\n");
     dispalyG(G);
+    kruskals(G,numOfCheckPoints);
 
     return 0;
 }
