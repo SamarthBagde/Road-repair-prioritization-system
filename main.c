@@ -124,39 +124,37 @@ void dispalyG(struct graph *g)
     }
 }
 
-int parent[100];
-  int e = 0;
-int find(int i){
-    while(parent[i] != i){
+int findParent(int i, int parent[])
+{
+    while (i != parent[i])
+    {
         i = parent[i];
     }
     return i;
 }
 
+void uni(int i, int j, int parent[])
+{
 
-void unioun(int i, int j){
-   
-    int a = find(i);
-    int b = find(j);
+    int a = findParent(i, parent);
+    int b = findParent(j, parent);
     parent[b] = a;
- e++;
-    printf("\nkrushkal-edge: %d %d \n", a, b);
-    }
- 
- void kruskals(struct graph *g, int v) {
-    int a = 0, b = 0;
-    int min;
-    
-    for (int i = 0; i < v; i++) {
-        parent[i] = i;
-    }
+}
 
-    while (e < v - 1) {
+void kruskals(struct graph *g, int v, int parent[], char names[maxInt][maxInt])
+{
+    int a, b, min, ne = 0, minWeight = 0;
+
+    while (ne < v - 1)
+    {
         min = 999;
-        for (int i = 0; i < v; i++) {
+        for (int i = 0; i < v; i++)
+        {
             struct listNode *ptr = g->A[i];
-            while (ptr != NULL) {
-                if (ptr->w < min && find(ptr->ver) != find(i)) {
+            while (ptr != NULL)
+            {
+                if (ptr->w < min && findParent(ptr->ver, parent) != findParent(i, parent))
+                {
                     min = ptr->w;
                     a = i;
                     b = ptr->ver;
@@ -164,8 +162,10 @@ void unioun(int i, int j){
                 ptr = ptr->next;
             }
         }
-        unioun(a, b);
-        
+        uni(a, b, parent);
+        printf("%s %s => %d\n", names[a], names[b], min);
+        ne++;
+        minWeight += min;
     }
 }
 
@@ -192,9 +192,15 @@ int main()
     struct graph *G = creteGraph(numOfCheckPoints);
     adjList(G, numOfCheckPoints, numOfRoads, road);
 
+    int parent[numOfCheckPoints + 1];
+    for (int i = 0; i <= numOfCheckPoints; i++)
+    {
+        parent[i] = i;
+    }
+
     printf("\n\n");
-    dispalyG(G);
-    kruskals(G,numOfCheckPoints);
+    // dispalyG(G);
+    kruskals(G, numOfCheckPoints, parent, checkPoimtsName);
 
     return 0;
 }
