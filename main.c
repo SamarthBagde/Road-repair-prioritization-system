@@ -8,7 +8,7 @@ struct roadSegment
     int startPoint;
     int endPoint;
     int potholesCount;
-    int trafficDencity; // rating fro 1 - 10 // good - worst
+    int trafficDensity; // rating fro 1 - 10 // good - worst
     int roadCondition;
     int weight;
 };
@@ -49,7 +49,7 @@ struct listNode *createNew(int data, int w)
 int calculatePriority(struct roadSegment road[], int index)
 {
 
-    int priority = (-10 * road[index].potholesCount) + (-7 * road[index].roadCondition) + (-5 * road[index].trafficDencity);
+    int priority = (-10 * road[index].potholesCount) + (-7 * road[index].roadCondition) + (-5 * road[index].trafficDensity);
     return priority;
 }
 
@@ -69,7 +69,7 @@ void adjList(struct graph *g, int v, int e, struct roadSegment *road)
         printf("Enter pothole count : \n");
         scanf("%d", &road[i].potholesCount);
         printf("Enter traffic dencity [1 (low) - 10 (high)] : \n");
-        scanf("%d", &road[i].trafficDencity);
+        scanf("%d", &road[i].trafficDensity);
         printf("Enter road condition [1 (Good) - 10 (Worst)] : \n");
         scanf("%d", &road[i].roadCondition);
         printf("\n\n");
@@ -141,10 +141,11 @@ void uni(int i, int j, int parent[])
     parent[b] = a;
 }
 
-void kruskals(struct graph *g, int v, int parent[], char names[maxInt][maxInt])
+void kruskals(struct graph *g, int v, int parent[], char names[maxInt][maxInt], struct roadSegment *road, int numOfRoads)
 {
     int a, b, min, ne = 0, minWeight = 0;
 
+    printf("The priority order of the road repair operations suggested by the system is : \n\n");
     while (ne < v - 1)
     {
         min = 999;
@@ -163,7 +164,15 @@ void kruskals(struct graph *g, int v, int parent[], char names[maxInt][maxInt])
             }
         }
         uni(a, b, parent);
-        printf("%s %s => %d\n", names[a], names[b], min);
+        printf("Road : %s - %s\n", names[a], names[b]);
+        for (int i = 0; i < numOfRoads; i++)
+        {
+            if ((a == road[i].startPoint && b == road[i].endPoint) || (b == road[i].startPoint && a == road[i].endPoint))
+            {
+                printf("Pothole Count : %d\tTraffic Density : %d\tRoad Condition : %d\n\n", road[i].potholesCount, road[i].trafficDensity, road[i].roadCondition);
+                break;
+            }
+        }
         ne++;
         minWeight += min;
     }
@@ -199,8 +208,7 @@ int main()
     }
 
     printf("\n\n");
-    // dispalyG(G);
-    kruskals(G, numOfCheckPoints, parent, checkPoimtsName);
+    kruskals(G, numOfCheckPoints, parent, checkPoimtsName, road, numOfRoads);
 
     return 0;
 }
