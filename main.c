@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include "priority.h"
 
 #define maxInt 100
 
@@ -48,8 +49,8 @@ struct listNode *createNew(int data, int w)
 
 int calculatePriority(struct roadSegment road[], int index)
 {
-
-    int priority = (-10 * road[index].potholesCount) + (-7 * road[index].roadCondition) + (-5 * road[index].trafficDensity);
+    struct priorityValues p = getPriorityValues();
+    int priority = (p.pot * road[index].potholesCount) + (p.road * road[index].roadCondition) + (p.traffic * road[index].trafficDensity);
     return priority;
 }
 
@@ -181,7 +182,7 @@ void kruskals(struct graph *g, int v, int parent[], char names[maxInt][maxInt], 
 int main()
 {
 
-    int numOfCheckPoints /* V */, numOfRoads /*edges*/;
+    int numOfCheckPoints, numOfRoads;
     char checkPoimtsName[maxInt][maxInt];
 
     printf("Enter number of check points : \n");
